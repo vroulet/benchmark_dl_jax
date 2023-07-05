@@ -23,6 +23,7 @@ class Dataset(BaseDataset):
     # Name to select the dataset in the CLI and to display the results.
     name = "CIFAR10"
 
+    requirements = ['tensorflow', 'tensorflow-datasets']
     # List of parameters to generate the datasets. The benchmark will consider
     # the cross product for each key in the dictionary.
     # Any parameters 'param' defined here is available as `self.param`.

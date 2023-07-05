@@ -11,9 +11,11 @@ with safe_import_context() as import_ctx:
     import jax
     import optax
     # import your reusable functions here
-    sys.path.append(os.path.abspath(os.curdir))
-    from datasets.cifar10 import Dataset
-    from objective import Objective
+
+    # For quick test
+    # sys.path.append(os.path.abspath(os.curdir))
+    # from datasets.cifar10 import Dataset
+    # from objective import Objective
 
 
 # FIXME: add weight decay
@@ -86,22 +88,22 @@ class Solver(BaseSolver):
         return self.params, self.batch_stats
     
 
-# Quick tests
-if __name__ == '__main__': 
-    dataset = Dataset()
-    dataset.batch_size = 1024
-    ds = dataset.get_data()
-    train_ds, test_ds, info_ds = ds['train_ds'], ds['test_ds'], ds['info_ds']
-    objective = Objective()
-    objective.model = 'resnet18'
-    objective.loss = 'cross_entropy'
-    objective.set_data(train_ds, test_ds, info_ds)
-    objective_ = objective.get_objective()
-    train_ds, test_ds, initialize_model, net, loss_fun = objective_['train_ds'], objective_['test_ds'], objective_['initialize_model'], objective_['net'], objective_['loss_fun']
-    solver = Solver()
-    solver.learning_rate, solver.momentum, solver.nesterov = 1e-3, 1., False
-    solver.set_objective(train_ds, test_ds, initialize_model, net, loss_fun)
-    solver.run(n_iter=2)
-    params, batch_stats = solver.get_result()
-    results = objective.compute(params, batch_stats)
-    print(results)
+# # Quick tests
+# if __name__ == '__main__': 
+#     dataset = Dataset()
+#     dataset.batch_size = 1024
+#     ds = dataset.get_data()
+#     train_ds, test_ds, info_ds = ds['train_ds'], ds['test_ds'], ds['info_ds']
+#     objective = Objective()
+#     objective.model = 'resnet18'
+#     objective.loss = 'cross_entropy'
+#     objective.set_data(train_ds, test_ds, info_ds)
+#     objective_ = objective.get_objective()
+#     train_ds, test_ds, initialize_model, net, loss_fun = objective_['train_ds'], objective_['test_ds'], objective_['initialize_model'], objective_['net'], objective_['loss_fun']
+#     solver = Solver()
+#     solver.learning_rate, solver.momentum, solver.nesterov = 1e-3, 1., False
+#     solver.set_objective(train_ds, test_ds, initialize_model, net, loss_fun)
+#     solver.run(n_iter=2)
+#     params, batch_stats = solver.get_result()
+#     results = objective.compute(params, batch_stats)
+#     print(results)

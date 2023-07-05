@@ -8,7 +8,9 @@ with safe_import_context() as import_ctx:
     import jax
     from jax import numpy as jnp
     from benchmark_utils import ResNet, ResNetBlock, BottleneckResNetBlock, cross_entropy_fun, EvalMetrics
-    from datasets.cifar10 import Dataset
+
+    # For quick test
+    # from datasets.cifar10 import Dataset
 
 # FIXME make it work without mutable and with other mutable (use e.g. kwargs_net) 
 def eval_step_template(params, batch_stats, x, y, metrics, net, loss_fun):
@@ -32,6 +34,8 @@ class Objective(BaseObjective):
 
     # Name to select the objective in the CLI and to display the results.
     name = "Image classification with deep networks"
+
+    requirements = ['jax', 'jaxlib', 'optax', 'clu', 'flax']
 
     # List of parameters for the objective. The benchmark will consider
     # the cross product for each key in the dictionary.
