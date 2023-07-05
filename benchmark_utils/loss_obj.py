@@ -1,4 +1,3 @@
-
 from benchopt import safe_import_context
 
 with safe_import_context() as import_ctx:
@@ -19,4 +18,4 @@ def cross_entropy_fun(logits, labels):
 @struct.dataclass
 class EvalMetrics(clu_metrics.Collection):
     accuracy: clu_metrics.Accuracy
-    loss: clu_metrics.Average.from_output('loss')
+    loss: clu_metrics.Average.from_output("loss")
