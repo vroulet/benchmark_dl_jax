@@ -2,6 +2,8 @@ Template for Benchopt Benchmark repositories
 =============================================
 |Build Template|
 
+Work in Progress
+
 This repo should be used with the following steps:
 
 1. Hit the `Use this template` button on the top of `this page <https://github.com/benchopt/template_benchmark>`_,
