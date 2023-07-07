@@ -6,5 +6,12 @@
 
 from benchopt import safe_import_context  # pylint: disable=unused-import
 
-from benchmark_utils.flax_net import ResNet, ResNetBlock, BottleneckResNetBlock  # pylint: disable=unused-import
-from benchmark_utils.loss_obj import cross_entropy_fun, EvalMetrics  # pylint: disable=unused-import
+from benchmark_utils.flax_net import (
+    ResNet,
+    ResNetBlock,
+    BottleneckResNetBlock,
+)  # pylint: disable=unused-import
+from benchmark_utils.loss_obj import (
+    cross_entropy_fun,
+    EvalMetrics,
+)  # pylint: disable=unused-import

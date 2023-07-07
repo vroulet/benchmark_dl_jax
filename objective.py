@@ -41,7 +41,13 @@ class Objective(BaseObjective):
     # Name to select the objective in the CLI and to display the results.
     name = "ImageClassification"
 
-    requirements = ["pip:jax", "pip:jaxlib", "pip:optax", "pip:clu", "pip:flax"]
+    requirements = [
+        "pip:jax",
+        "pip:jaxlib",
+        "pip:optax",
+        "pip:clu",
+        "pip:flax",
+    ]
 
     # List of parameters for the objective. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -98,7 +104,9 @@ class Objective(BaseObjective):
     def initialize_model(self):
         seed = 0
         rng = jax.random.PRNGKey(seed)
-        variables = self.net.init(rng, jnp.ones((1, *self.info_ds.input_shape)))
+        variables = self.net.init(
+            rng, jnp.ones((1, *self.info_ds.input_shape))
+        )
         params, batch_stats = variables["params"], variables["batch_stats"]
         return params, batch_stats
 
