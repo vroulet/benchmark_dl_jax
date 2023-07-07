@@ -15,14 +15,14 @@ with safe_import_context() as import_ctx:
         EvalMetrics,
     )
 
-    # For quick test
-    # from datasets.cifar10 import Dataset
-
 
 # FIXME make it work without mutable and with other mutable (use e.g. kwargs_net)
 def eval_step_template(params, batch_stats, x, y, metrics, net, loss_fun):
     logits = net.apply(
-        {"params": params, "batch_stats": batch_stats}, x, train=False, mutable=False
+        {"params": params, "batch_stats": batch_stats},
+        x,
+        train=False,
+        mutable=False,
     )
     loss_val = loss_fun(logits, y)
     new_metrics = EvalMetrics.single_from_model_output(
@@ -39,9 +39,9 @@ def eval_step_template(params, batch_stats, x, y, metrics, net, loss_fun):
 # inherit from `BaseObjective` for `benchopt` to work properly.
 class Objective(BaseObjective):
     # Name to select the objective in the CLI and to display the results.
-    name = "Image classification with deep networks"
+    name = "ImageClassification"
 
-    requirements = ["jax", "jaxlib", "optax", "clu", "flax"]
+    requirements = ["pip:jax", "pip:jaxlib", "pip:optax", "pip:clu", "pip:flax"]
 
     # List of parameters for the objective. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -64,18 +64,26 @@ class Objective(BaseObjective):
 
         self.net, self.loss_fun = self.set_model()
 
-        eval_step = partial(eval_step_template, net=self.net, loss_fun=self.loss_fun)
+        eval_step = partial(
+            eval_step_template, net=self.net, loss_fun=self.loss_fun
+        )
         self.eval_step = jax.jit(eval_step)
         # `set_data` can be used to preprocess the data.
 
     def set_model(self):
         if self.model == "resnet18":
-            net_arch = partial(ResNet, stage_sizes=[2, 2, 2, 2], block_cls=ResNetBlock)
+            net_arch = partial(
+                ResNet, stage_sizes=[2, 2, 2, 2], block_cls=ResNetBlock
+            )
         elif self.model_size == "resnet34":
-            net_arch = partial(ResNet, stage_sizes=[3, 4, 6, 3], block_cls=ResNetBlock)
+            net_arch = partial(
+                ResNet, stage_sizes=[3, 4, 6, 3], block_cls=ResNetBlock
+            )
         elif self.model_size == "resnet50":
             net_arch = partial(
-                ResNet, stage_sizes=[3, 4, 6, 3], block_cls=BottleneckResNetBlock
+                ResNet,
+                stage_sizes=[3, 4, 6, 3],
+                block_cls=BottleneckResNetBlock,
             )
         else:
             raise NotImplementedError
@@ -100,11 +108,11 @@ class Objective(BaseObjective):
             metrics = self.eval_step(params, batch_stats, x, y, metrics)
         return metrics.compute()
 
-    def compute(self, params, batch_stats):
+    def compute(self, output):
         # The arguments of this function are the outputs of the
         # `Solver.get_result`. This defines the benchmark's API to pass
         # solvers' result. This is customizable for each benchmark.
-
+        params, batch_stats = output['params'], output['batch_stats']
         train_metrics = self.eval(params, batch_stats, self.train_ds)
         test_metrics = self.eval(params, batch_stats, self.test_ds)
 
@@ -136,19 +144,3 @@ class Objective(BaseObjective):
             net=self.net,
             loss_fun=self.loss_fun,
         )
-
-
-# # Quick tests
-# if __name__ == '__main__':
-#     dataset = Dataset()
-#     dataset.batch_size = 1024
-#     ds = dataset.get_data()
-#     train_ds, test_ds, info_ds = ds['train_ds'], ds['test_ds'], ds['info_ds']
-#     objective = Objective()
-#     objective.model = 'resnet18'
-#     objective.loss = 'cross_entropy'
-#     objective.set_data(train_ds, test_ds, info_ds)
-#     params, batch_stats = objective.get_one_solution()
-#     params, batch_stats = objective.initialize_model()
-#     results = objective.compute(params, batch_stats)
-#     print(results)

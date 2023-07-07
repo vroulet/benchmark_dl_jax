@@ -11,13 +11,6 @@ with safe_import_context() as import_ctx:
 
     # import your reusable functions here
 
-    # For quick test
-    # import os
-    # import sys
-    # sys.path.append(os.path.abspath(os.curdir))
-    # from datasets.cifar10 import Dataset
-    # from objective import Objective
-
 
 # FIXME: add weight decay
 def obj_fun_template(params, batch_stats, x, y, net, loss_fun):
@@ -30,7 +23,9 @@ def obj_fun_template(params, batch_stats, x, y, net, loss_fun):
     return loss_val, mutated_vars["batch_stats"]
 
 
-def train_step_template(params, batch_stats, opt_state, x, y, obj_grad_fun, optimizer):
+def train_step_template(
+    params, batch_stats, opt_state, x, y, obj_grad_fun, optimizer
+):
     grads, batch_stats = obj_grad_fun(params, batch_stats, x, y)
     updates, opt_state = optimizer.update(grads, opt_state, params)
     params = optax.apply_updates(params, updates)
@@ -41,7 +36,7 @@ def train_step_template(params, batch_stats, opt_state, x, y, obj_grad_fun, opti
 # inherit from `BaseSolver` for `benchopt` to work properly.
 class Solver(BaseSolver):
     # Name to select the solver in the CLI and to display the results.
-    name = "Optax-SGD"
+    name = "OptaxSGD"
 
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -72,7 +67,9 @@ class Solver(BaseSolver):
             momentum=self.momentum,
             nesterov=self.nesterov,
         )
-        obj_fun = partial(obj_fun_template, net=self.net, loss_fun=self.loss_fun)
+        obj_fun = partial(
+            obj_fun_template, net=self.net, loss_fun=self.loss_fun
+        )
         obj_grad_fun = jax.grad(obj_fun, has_aux=True)
         params, batch_stats = self.initialize_model()
         opt_state = optimizer.init(params)
@@ -94,27 +91,4 @@ class Solver(BaseSolver):
         # The outputs of this function are the arguments of `Objective.compute`
         # This defines the benchmark's API for solvers' results.
         # it is customizable for each benchmark.
-        return self.params, self.batch_stats
-
-
-# # Quick tests
-# if __name__ == "__main__":
-#     dataset = Dataset()
-#     dataset.batch_size = 1024
-#     ds = dataset.get_data()
-#     train_ds, test_ds, info_ds = ds["train_ds"], ds["test_ds"], ds["info_ds"]
-#     objective = Objective()
-#     objective.model = "resnet18"
-#     objective.loss = "cross_entropy"
-#     objective.set_data(train_ds, test_ds, info_ds)
-#     objective_ = objective.get_objective()
-#     train_ds, test_ds = objective_["train_ds"], objective_["test_ds"]
-#     initialize_model = objective_["initialize_model"]
-#     net, loss_fun = objective_["net"], objective_["loss_fun"]
-#     solver = Solver()
-#     solver.learning_rate, solver.momentum, solver.nesterov = 1e-3, 1.0, False
-#     solver.set_objective(train_ds, test_ds, initialize_model, net, loss_fun)
-#     solver.run(n_iter=2)
-#     params, batch_stats = solver.get_result()
-#     results = objective.compute(params, batch_stats)
-#     print(results)
+        return dict(params=self.params, batch_stats=self.batch_stats)

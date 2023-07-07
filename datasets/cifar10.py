@@ -23,7 +23,10 @@ class Dataset(BaseDataset):
     # Name to select the dataset in the CLI and to display the results.
     name = "CIFAR10"
 
-    requirements = ["tensorflow", "tensorflow-datasets"]
+    requirements = ["pip:tensorflow-datasets", 
+                    "pip:tensorflow",
+                    # "pip:tensorflow-mac",
+                    ]
     # List of parameters to generate the datasets. The benchmark will consider
     # the cross product for each key in the dictionary.
     # Any parameters 'param' defined here is available as `self.param`.
@@ -75,17 +78,3 @@ class Dataset(BaseDataset):
         )
         # The dictionary defines the keyword arguments for `Objective.set_data`
         return dict(train_ds=train_ds, test_ds=test_ds, info_ds=info_ds)
-
-
-# # Quick test
-# if __name__ == '__main__':
-#     ds = Dataset()
-#     ds.batch_size = 128
-#     out = ds.get_data()
-#     train_ds, test_ds, indo_ds = out['train_ds'], out['test_ds'], out['info_ds']
-#     i = 0
-#     for x, y in train_ds:
-#         print(x.shape)
-#         i += 1
-#         if i > 2:
-#             break

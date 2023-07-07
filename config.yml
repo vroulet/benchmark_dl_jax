@@ -1,0 +1,12 @@
+objective:
+  - ImageClassification[model=resnet18, loss='cross_entropy']
+
+dataset:
+  - CIFAR10[batch_size=128]
+
+solver:
+  - OptaxSGD[learning_rate=1e-3,momentum=0.,nesterov=False]
+
+n-repetitions: 1
+max-runs: 200
+timeout: 10800
