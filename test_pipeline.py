@@ -23,10 +23,8 @@ def test_pipeline():
     solver.run(n_iter=2)
     params, batch_stats = solver.get_result()
     results = objective.compute(params, batch_stats)
-    assert 'value' in results.keys()
+    assert "value" in results.keys()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_pipeline()
-
-    

@@ -112,7 +112,7 @@ class Objective(BaseObjective):
         # The arguments of this function are the outputs of the
         # `Solver.get_result`. This defines the benchmark's API to pass
         # solvers' result. This is customizable for each benchmark.
-        params, batch_stats = output['params'], output['batch_stats']
+        params, batch_stats = output["params"], output["batch_stats"]
         train_metrics = self.eval(params, batch_stats, self.train_ds)
         test_metrics = self.eval(params, batch_stats, self.test_ds)
 

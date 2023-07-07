@@ -29,9 +29,9 @@ class ResNetBlock(nn.Module):
         y = self.norm(scale_init=nn.initializers.zeros)(y)
 
         if residual.shape != y.shape:
-            residual = self.conv(self.filters, (1, 1), self.strides, name="conv_proj")(
-                residual
-            )
+            residual = self.conv(
+                self.filters, (1, 1), self.strides, name="conv_proj"
+            )(residual)
             residual = self.norm(name="norm_proj")(residual)
 
         return self.act(residual + y)
@@ -89,7 +89,11 @@ class ResNet(nn.Module):
         )
 
         x = conv(
-            self.num_filters, (7, 7), (2, 2), padding=[(3, 3), (3, 3)], name="conv_init"
+            self.num_filters,
+            (7, 7),
+            (2, 2),
+            padding=[(3, 3), (3, 3)],
+            name="conv_init",
         )(x)
         x = norm(name="bn_init")(x)
         x = nn.relu(x)

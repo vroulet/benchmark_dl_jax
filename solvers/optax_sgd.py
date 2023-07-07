@@ -47,7 +47,9 @@ class Solver(BaseSolver):
         "nesterov": [False, True],
     }
 
-    def set_objective(self, train_ds, test_ds, initialize_model, net, loss_fun):
+    def set_objective(
+        self, train_ds, test_ds, initialize_model, net, loss_fun
+    ):
         # Define the information received by each solver from the objective.
         # The arguments of this function are the results of the
         # `Objective.get_objective`. This defines the benchmark's API for

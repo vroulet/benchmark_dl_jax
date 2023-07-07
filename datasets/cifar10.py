@@ -23,10 +23,11 @@ class Dataset(BaseDataset):
     # Name to select the dataset in the CLI and to display the results.
     name = "CIFAR10"
 
-    requirements = ["pip:tensorflow-datasets", 
-                    "pip:tensorflow",
-                    # "pip:tensorflow-mac",
-                    ]
+    requirements = [
+        "pip:tensorflow-datasets",
+        "pip:tensorflow",
+        # "pip:tensorflow-mac",
+    ]
     # List of parameters to generate the datasets. The benchmark will consider
     # the cross product for each key in the dictionary.
     # Any parameters 'param' defined here is available as `self.param`.
@@ -61,20 +62,27 @@ class Dataset(BaseDataset):
         # for test_ds
         train_ds = train_ds.cache()
         train_ds = train_ds.shuffle(50000)
-        train_ds = train_ds.map(process_sample, num_parallel_calls=tf.data.AUTOTUNE)
+        train_ds = train_ds.map(
+            process_sample, num_parallel_calls=tf.data.AUTOTUNE
+        )
         train_ds = train_ds.batch(self.batch_size, drop_remainder=True)
         train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
         train_ds = tfds.as_numpy(train_ds)
 
         test_ds = test_ds.cache()
         test_ds = test_ds.shuffle(10000)
-        test_ds = test_ds.map(process_sample, num_parallel_calls=tf.data.AUTOTUNE)
+        test_ds = test_ds.map(
+            process_sample, num_parallel_calls=tf.data.AUTOTUNE
+        )
         test_ds = test_ds.batch(self.batch_size, drop_remainder=True)
         test_ds = test_ds.prefetch(tf.data.AUTOTUNE)
         test_ds = tfds.as_numpy(test_ds)
 
         info_ds = InfoDataset(
-            num_train=50000, num_test=10000, num_classes=10, input_shape=(32, 32, 3)
+            num_train=50000,
+            num_test=10000,
+            num_classes=10,
+            input_shape=(32, 32, 3),
         )
         # The dictionary defines the keyword arguments for `Objective.set_data`
         return dict(train_ds=train_ds, test_ds=test_ds, info_ds=info_ds)
